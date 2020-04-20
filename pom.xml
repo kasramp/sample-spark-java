@@ -10,6 +10,7 @@
     <description>Sample Spark Java</description>
     <properties>
         <java.version>11</java.version>
+        <exec.mainClass>com.madadipouya.sample.spark.Runner</exec.mainClass>
     </properties>
     <dependencies>
         <dependency>
