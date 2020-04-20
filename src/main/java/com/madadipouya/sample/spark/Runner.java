@@ -6,7 +6,7 @@ import org.apache.spark.sql.SparkSession;
 
 import java.sql.SQLException;
 
-public class Spark {
+public class Runner {
 
     private static final int TEST_DATA_SIZE = 1000000;
 
@@ -14,15 +14,15 @@ public class Spark {
 
     private PropertyLoader propertyLoader;
 
-    public Spark() {
+    public Runner() {
         this.propertyLoader = new PropertyLoader();
         this.dbInitializer = new DbInitializer(propertyLoader);
     }
 
     public static void main(String[] args) throws SQLException {
-        Spark spark = new Spark();
-        spark.insertTestData();
-        spark.transformToJson();
+        Runner runner = new Runner();
+        runner.insertTestData();
+        runner.transformToJson();
     }
 
     private void insertTestData() throws SQLException {
@@ -33,7 +33,7 @@ public class Spark {
         SparkSession spark = SparkSession.builder()
                 .config("spark.master", "local")
                 .appName("Java Spark SQL basic example").getOrCreate();
-        String query = "SELECT * FROM books order by id";
+        String query = "SELECT id, title, description, author, year, edition, publisher FROM books order by id";
         Dataset<Row> jdbcDF = spark.read().format("jdbc")
                 .option("url", propertyLoader.getJdbcConnectionString())
                 .option("user", propertyLoader.getDatabaseUserName())
@@ -42,12 +42,14 @@ public class Spark {
                 .option("partitionColumn", "id")
                 .option("lowerBound", "0")
                 .option("upperBound", Long.MAX_VALUE)
-                /*.option("partitionColumn", "expirationDate")
-                .option("lowerBound", "2010-01-01 00:00:00")
+                // Use to partition by date
+                /*.option("partitionColumn", "inserted")
+                .option("lowerBound", "1930-01-01 00:00:00")
                 .option("upperBound", "2030-01-01 00:00:00")*/
                 .option("driver", "com.mysql.jdbc.Driver")
                 .option("dbtable", String.format("(%s) AS tmp", query))
                 .load();
-        jdbcDF.write().format("json").mode("append").save("/Users/kasra.madadipouya/Desktop/xyz.json");
+        jdbcDF.write().format("json").mode("append").save("books_json.json");
+        spark.close();
     }
 }
