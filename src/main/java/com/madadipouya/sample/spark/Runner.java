@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class Runner {
 
-    private static final int TEST_DATA_SIZE = 1000000;
+    private static final int TEST_DATA_SIZE = 3000000;
 
     private DbInitializer dbInitializer;
 
@@ -49,7 +49,7 @@ public class Runner {
                 .option("driver", "com.mysql.jdbc.Driver")
                 .option("dbtable", String.format("(%s) AS tmp", query))
                 .load();
-        jdbcDF.write().format("json").mode("append").save("books_json.json");
+        jdbcDF.write().format("json").mode("append").save("books_json");
         spark.close();
     }
 }
