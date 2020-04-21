@@ -1,6 +1,10 @@
 # Sample Spark Java
 
-A simple working example of Spark with Java
+A simple working example of Spark with Java.
+
+## Tutorial
+- [MySQL table to JSON with 10 lines of Spark
+](https://www.geekyhacker.com/2020/04/21/mysql-table-to-json-with-10-lines-of-spark/)
 
 ## How to run
 
